@@ -1,0 +1,34 @@
+---
+title: "Biostatistics Final Project: Laboratory Worker Sleep Analysis"
+output: word_document
+---
+
+```{r}
+power.t.test(n=NULL, delta=1.5, sd=0.9046, sig.level = 0.05, power = 0.9, type = "two.sample", alternative = "one.sided")
+```
+
+```{r}
+projectsleepdata <- read.delim("~/Downloads/projectsleepdata.txt")
+summary(projectsleepdata$avg.sleep)
+attach(projectsleepdata)
+boxplot(avg.sleep~lab.status)
+```
+
+```{r}
+detect_outlier <- function(x){
+     Q1<- quantile(x, probs=.25)
+     Q3<- quantile(x, probs=.75)
+     IQR=Q3-Q1
+     x>Q3 + (IQR*1.5)|x<Q1 -(IQR*1.5)}
+lab.sleep<-(avg.sleep[lab.status==1])
+nonl.sleep<-(avg.sleep[lab.status==0])
+detect_outlier(nonl.sleep)
+nonl.sleep2<- nonl.sleep[detect_outlier(nonl.sleep)=="FALSE"]
+```
+
+```{r}
+ sleep.bind=cbind(lab.sleep, nonl.sleep2)
+ boxplot(sleep.bind, beside=TRUE)
+ wilcox.test(lab.sleep, nonl.sleep2, alternative="less")
+ 
+```
